@@ -24,8 +24,7 @@ async function run() {
 
     const database = await client.db("Service-Price");
     const servicePriceCollection = database.collection("service");
-    const serviceUserAddressCollection =
-      database.collection("serviceUserAddress");
+    const orderInformationCollection = database.collection("orderInformation");
 
     app.get("/servicePriceGet", async (req, res) => {
       const result = await servicePriceCollection.find({}).toArray();
@@ -34,12 +33,24 @@ async function run() {
 
     //serviceUserAddress data post
 
-    app.post("/serviceUserAddress", async (req, res) => {
+    app.post("/orderInformation", async (req, res) => {
       const items = req.body;
 
-      // const result = serviceUserAddressCollection.insertOne(items);
+      const result = orderInformationCollection.insertOne(items);
 
-      console.log(req.body);
+      res.send(result);
+    });
+
+    // serviceUserAddress data get
+
+    app.get("/orderInformation/:email", async (req, res) => {
+      const email = req.params.email;
+
+      const result = await orderInformationCollection
+        .find({ email: email })
+        .toArray();
+
+      res.send(result);
     });
 
     //stripe payment system
